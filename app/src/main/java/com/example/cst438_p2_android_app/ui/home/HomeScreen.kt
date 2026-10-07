@@ -40,11 +40,15 @@ fun HomeScreen(
          */
 
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = onAddRecipeClick
-            ) {
-                Text("+")
-            }
+                DialMenuNav (
+                    onAddRecipeClick = {
+                        // I plan to connect this later
+                    },
+                    onUpdateMealPlanClick = {
+                        //I also plan to connect this later
+                    }
+
+                )
         }
     ) { innerPadding ->
 
