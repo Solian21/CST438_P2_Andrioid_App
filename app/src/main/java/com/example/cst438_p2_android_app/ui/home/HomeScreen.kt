@@ -1,3 +1,9 @@
+/**
+ * This is the home page that users will see after they log in
+ * They should have Recipe Cards that they can view 3 random recipes
+ * the next column is going to be the meal plans.
+ * If possible I would want them to be some kind of a carousel where the user can view Monday-Sunday
+ */
 package com.example.cst438_p2_android_app.ui.home
 
 import androidx.compose.foundation.layout.*
@@ -28,6 +34,11 @@ fun HomeScreen(
                 ),
             )
         },
+        /**
+         * I want to use this to have the user add their own recipes
+         * I was thinking it could also expand to add meal plans almost like a navigation bar
+         */
+
         floatingActionButton = {
             FloatingActionButton(
                 onClick = onAddRecipeClick
@@ -45,7 +56,7 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
-                text = "Welcome!",
+                text = "Welcome! {Name}",
             )
 
             OutlinedTextField(
@@ -56,7 +67,7 @@ fun HomeScreen(
                     Text("Search recipes")
                 },
                 placeholder = {
-                    Text("Search coming soon")
+                    Text("Discover new recipes")
                 },
                 readOnly = true
             )
