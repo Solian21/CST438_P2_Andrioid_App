@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.cst438_p2_android_app.ui.theme.CST438_P2_Android_APPTheme
+import com.example.cst438_p2_android_app.ui.home.Login
 
 // Needed to add this so that Kotlin knows I am aware the things are going to change
 @OptIn(ExperimentalMaterial3Api::class)
