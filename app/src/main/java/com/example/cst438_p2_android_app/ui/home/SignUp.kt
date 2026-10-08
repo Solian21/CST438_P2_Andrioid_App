@@ -1,0 +1,100 @@
+package com.example.cst438_p2_android_app.ui.home
+
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.cst438_p2_android_app.ui.theme.CST438_P2_Android_APPTheme
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SignUp(modifier: Modifier = Modifier) {
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            TopAppBar(
+                title =
+                    {
+                        Text("Sign Up Screen")
+                    },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.primary
+                )
+            )
+        }
+    ) {
+            innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Text("Welcome!")
+
+            //Sign up Fields and allowing for sign up without OAuth just in case
+
+            OutlinedTextField(
+                value = "",
+                onValueChange = {},
+                modifier = Modifier.fillMaxWidth(),
+                label = {
+                    Text("Email")
+                }
+            )
+
+            OutlinedTextField(
+                value = "",
+                onValueChange = {},
+                modifier = Modifier.fillMaxWidth(),
+                label = {
+                    Text("User Name")
+                }
+            )
+
+            OutlinedTextField(
+                value = "",
+                onValueChange = {},
+                modifier = Modifier.fillMaxWidth(),
+                label = {
+                    Text("Password")
+                }
+            )
+            OutlinedTextField(
+                value = "",
+                onValueChange = {},
+                modifier = Modifier.fillMaxWidth(),
+                label = {
+                    Text("Repeat Password")
+                }
+            )
+
+            Button(
+                onClick = {},
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Sign Up Using Google")
+            }
+
+            Button(
+                onClick = {},
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Sign Up")
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SignUpPreview() {
+    CST438_P2_Android_APPTheme {
+        SignUp()
+    }
+}
