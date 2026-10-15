@@ -5,6 +5,7 @@ import androidx.compose.ui.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.ui.unit.*
+import com.example.cst438_p2_android_app.ui.theme.AppDimensions
 
 
 @Composable
@@ -20,7 +21,9 @@ fun DialMenuNav(
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.End,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(
+            AppDimensions.itemSpacing
+        )
     ) {
         if (isExpanded) {
             SmallFloatingActionButton(
