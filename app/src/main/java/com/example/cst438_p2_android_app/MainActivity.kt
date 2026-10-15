@@ -70,7 +70,29 @@ class MainActivity : ComponentActivity() {
     /**
      * This function is going to recieve the redirect Intent after the google sing in
      */
-
+    override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?
+    ) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == GoogleAuthManager.AUTHORIZATION_REQUEST_CODE) {
+            if(data == null) {
+                Log.e("GoogleAuth", "Google sign-in returned no data ")
+            return
+            }
+            //asking GoogleAuthManager to process teh response and exachange the authorization code for a token
+            googleAuthManager.authorizationRespone(data) {
+                accessToken, errorMessage ->
+                if (accessToken != null) {
+                    //our authentication worked
+                    Log.d("GoogleAuth", "Google sign in worked")
+                } else {
+                    Log.e("GoogleAuth", errorMessage ?: "Unknown Google sign-in error")
+                }
+            }
+        }
+    }
 
 
     override fun onDestroy() {
