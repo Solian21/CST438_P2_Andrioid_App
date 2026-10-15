@@ -13,7 +13,9 @@ import com.example.cst438_p2_android_app.ui.theme.CST438_P2_Android_APPTheme
 @Composable
 fun Login(
     modifier: Modifier = Modifier,
-    onGoogleSignInClick: ()-> Unit = {}
+    onGoogleSignInClick: () -> Unit = {},
+    authError: String? = null,
+    onRetry: () -> Unit = onGoogleSignInClick
 ) {
     Scaffold(
         modifier = modifier,
@@ -41,6 +43,20 @@ fun Login(
             )
         ) {
             Text("Welcome back!")
+
+            if (authError != null) {
+                Text(
+                    text = authError,
+                    color = MaterialTheme.colorScheme.error
+                )
+
+                OutlinedButton(
+                    onClick = onRetry,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Retry")
+                }
+            }
 
             OutlinedTextField(
                 value = "",

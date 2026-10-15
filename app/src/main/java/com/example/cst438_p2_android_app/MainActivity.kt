@@ -21,6 +21,7 @@ private enum class AppScreen {
 class MainActivity : ComponentActivity() {
     //this variable is what is going to hold my helper method that I created ealier
     private lateinit var googleAuthManager: GoogleAuthManager
+    private var authError by mutableStateOf<String?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +40,17 @@ class MainActivity : ComponentActivity() {
                     AppScreen.LOGIN -> {
                         Login(
                             onGoogleSignInClick = {
-                                googleAuthManager.startSignIn()
+                                authError = null
+                                googleAuthManager.startSignIn { message ->
+                                    showAuthError(message)
+                                }
+                            },
+                            authError = authError,
+                            onRetry = {
+                                authError = null
+                                googleAuthManager.startSignIn { message ->
+                                    showAuthError(message)
+                                }
                             }
                         )
                     }
@@ -76,10 +87,12 @@ class MainActivity : ComponentActivity() {
         data: Intent?
     ) {
         super.onActivityResult(requestCode, resultCode, data)
+
         if (requestCode == GoogleAuthManager.AUTHORIZATION_REQUEST_CODE) {
-            if(data == null) {
-                Log.e("GoogleAuth", "Google sign-in returned no data ")
-            return
+            if (data == null) {
+                Log.e("GoogleAuth", "Google sign in returned no data ")
+                showAuthError("Google sign in returned no response. Please try again.")
+                return
             }
             //asking GoogleAuthManager to process teh response and exachange the authorization code for a token
             googleAuthManager.authorizationRespone(data) {
@@ -88,12 +101,18 @@ class MainActivity : ComponentActivity() {
                     //our authentication worked
                     Log.d("GoogleAuth", "Google sign in worked")
                 } else {
-                    Log.e("GoogleAuth", errorMessage ?: "Unknown Google sign-in error")
+                    Log.e("GoogleAuth", errorMessage ?: "Unknown Google sign in error")
+                    showAuthError(errorMessage ?: "Google sign in failed. Please try again.")
                 }
             }
         }
     }
 
+    private fun showAuthError(message: String) {
+        runOnUiThread {
+            authError = message
+        }
+    }
 
     override fun onDestroy() {
         googleAuthManager.dispose()

@@ -1,16 +1,16 @@
 package com.example.cst438_p2_android_app.auth
 
 import android.app.Activity
+import android.content.Intent
 import android.net.Uri
 import com.example.cst438_p2_android_app.R
 import net.openid.appauth.AuthorizationRequest
 import net.openid.appauth.AuthorizationService
 import net.openid.appauth.AuthorizationServiceConfiguration
 import net.openid.appauth.ResponseTypeValues
-import org.json.JSONObject
-import android.content.Intent
 import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationResponse
+import org.json.JSONObject
 
 /**
  * This class is going to be a helper class for starting Google's sing in process
@@ -21,7 +21,7 @@ class GoogleAuthManager(
 ) {
     private val authorizationService = AuthorizationService(activity)
 
-    fun startSignIn() {
+    fun startSignIn(onError: (String) -> Unit = {}) {
         //Reads in the client ID, redirect URI, scope, and discovery URL
         //this info is found in res/raw/auth_config.json
         val config = readGoogleConfig()
@@ -31,6 +31,9 @@ class GoogleAuthManager(
 
             //If we are unable to find the configuration then we are going to end our process
             if (serviceConfiguration == null || exception != null) {
+                onError(
+                    exception?.errorDescription ?: "Unable to connect to Google. Check your internet connection and try again."
+                )
                 return@fetchFromUrl
             }
             // Building our authorization request -> this will be sent to google
@@ -73,7 +76,10 @@ class GoogleAuthManager(
         val autorizationException = AuthorizationException.fromIntent(intent)
         //if there are no authorization response then our sign in failed
         if (authorizationResponse == null) {
-            onComplete(null, autorizationException?.errorDescription?:"Google sign in did not return a response")
+            onComplete(
+                null,
+                autorizationException?.errorDescription ?: "Google sign in did not return a response"
+            )
             return
         }
         //token request using our authorization code
@@ -83,11 +89,19 @@ class GoogleAuthManager(
             tokenResponse, tokenException ->
             //if the exchange fails
             if (tokenResponse == null) {
-                onComplete(null, tokenException?.errorDescription?: "The authorization code could not be exchanged")
+                onComplete(
+                    null,
+                    tokenException?.errorDescription ?: "The authorization code could not be exchanged"
+                )
                 return@performTokenRequest
             }
             //this is the token that will be sent to our API
-            val accessToken = tokenResponse.accessToken
+            val accessToken = tokenResponse.idToken
+            if (accessToken == null) {
+                onComplete(null, "Google did not return an ID token. Please try again.")
+                return@performTokenRequest
+            }
+
             //gottta tell our main Activity that th eauthenticaiton succeeded
             onComplete(accessToken, null)
         }
