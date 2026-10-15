@@ -8,6 +8,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.cst438_p2_android_app.ui.theme.CST438_P2_Android_APPTheme
 import com.example.cst438_p2_android_app.ui.theme.AppDimensions
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,6 +51,7 @@ fun RecipeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
                 .padding(AppDimensions.screenPadding),
             verticalArrangement = Arrangement.spacedBy(AppDimensions.sectionSpacing)
         ) {
