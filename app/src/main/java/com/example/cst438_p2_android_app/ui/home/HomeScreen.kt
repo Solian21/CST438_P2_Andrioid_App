@@ -6,6 +6,7 @@
  */
 package com.example.cst438_p2_android_app.ui.home
 
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -14,13 +15,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.cst438_p2_android_app.ui.theme.CST438_P2_Android_APPTheme
 import com.example.cst438_p2_android_app.ui.home.Login
+import com.example.cst438_p2_android_app.ui.theme.AppDimensions
+
 
 // Needed to add this so that Kotlin knows I am aware the things are going to change
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    onAddRecipeClick: () -> Unit = {}
+    onAddRecipeClick: () -> Unit = {},
+    onUpdateMealPlanClick: () -> Unit = {}
 ) {
     Scaffold(
         modifier = modifier,
@@ -41,15 +45,10 @@ fun HomeScreen(
          */
 
         floatingActionButton = {
-                DialMenuNav (
-                    onAddRecipeClick = {
-                        // I plan to connect this later
-                    },
-                    onUpdateMealPlanClick = {
-                        //I also plan to connect this later
-                    }
-
-                )
+            DialMenuNav(
+                onAddRecipeClick = onAddRecipeClick,
+                onUpdateMealPlanClick = onUpdateMealPlanClick
+            )
         }
     ) { innerPadding ->
 
@@ -57,8 +56,10 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(AppDimensions.screenPadding),
+            verticalArrangement = Arrangement.spacedBy(
+                AppDimensions.sectionSpacing
+            )
         ) {
             Text(
                 text = "Welcome! {Name}",
