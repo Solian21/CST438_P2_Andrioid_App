@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.cst438_p2_android_app.ui.theme.AppDimensions
 import com.example.cst438_p2_android_app.ui.theme.CST438_P2_Android_APPTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,8 +32,10 @@ fun Login(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(AppDimensions.screenPadding),
+            verticalArrangement = Arrangement.spacedBy(
+                AppDimensions.sectionSpacing
+            )
         ) {
             Text("Welcome back!")
 
