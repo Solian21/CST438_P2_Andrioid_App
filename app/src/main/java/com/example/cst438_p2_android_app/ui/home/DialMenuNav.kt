@@ -32,7 +32,7 @@ fun DialMenuNav(
                     onAddRecipeClick()
                 }
             ) {
-                Text("Recipe")
+                Text("Add Recipe")
             }
 
             SmallFloatingActionButton(
@@ -41,7 +41,7 @@ fun DialMenuNav(
                     onUpdateMealPlanClick()
                 }
             ) {
-                Text("Plan")
+                Text("Meal Plan")
             }
         }
 

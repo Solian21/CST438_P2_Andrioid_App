@@ -12,12 +12,18 @@ import com.example.cst438_p2_android_app.ui.theme.AppDimensions
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecipeScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onBackClick: () -> Unit = {}
 ) {
     Scaffold(
         modifier = modifier,
         topBar = {
             TopAppBar(
+                navigationIcon = {
+                    TextButton(onClick = onBackClick) {
+                        Text("Back")
+                    }
+                },
                 title = {
                     Text("Recipes")
                 },

@@ -23,7 +23,8 @@ import com.example.cst438_p2_android_app.ui.theme.AppDimensions
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    onAddRecipeClick: () -> Unit = {}
+    onAddRecipeClick: () -> Unit = {},
+    onUpdateMealPlanClick: () -> Unit = {}
 ) {
     Scaffold(
         modifier = modifier,
@@ -44,15 +45,10 @@ fun HomeScreen(
          */
 
         floatingActionButton = {
-                DialMenuNav (
-                    onAddRecipeClick = {
-                        // I plan to connect this later
-                    },
-                    onUpdateMealPlanClick = {
-                        //I also plan to connect this later
-                    }
-
-                )
+            DialMenuNav(
+                onAddRecipeClick = onAddRecipeClick,
+                onUpdateMealPlanClick = onUpdateMealPlanClick
+            )
         }
     ) { innerPadding ->
 
