@@ -22,6 +22,8 @@ class MainActivity : ComponentActivity() {
     //this variable is what is going to hold my helper method that I created ealier
     private lateinit var googleAuthManager: GoogleAuthManager
     private var authError by mutableStateOf<String?>(null)
+    private var currentScreen by mutableStateOf(AppScreen.LOGIN)
+    private var googleIdToken by mutableStateOf<String?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,10 +33,6 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             CST438_P2_Android_APPTheme {
-
-                var currentScreen by remember {
-                    mutableStateOf(AppScreen.LOGIN)
-                }
 
                 when (currentScreen) {
                     AppScreen.LOGIN -> {
@@ -96,10 +94,15 @@ class MainActivity : ComponentActivity() {
             }
             //asking GoogleAuthManager to process teh response and exachange the authorization code for a token
             googleAuthManager.authorizationRespone(data) {
-                accessToken, errorMessage ->
-                if (accessToken != null) {
+                idTokenResult, errorMessage ->
+                if (idTokenResult != null) {
                     //our authentication worked
+                    runOnUiThread {
+                        googleIdToken = idTokenResult
+                        currentScreen = AppScreen.HOME
+                    }
                     Log.d("GoogleAuth", "Google sign in worked")
+
                 } else {
                     Log.e("GoogleAuth", errorMessage ?: "Unknown Google sign in error")
                     showAuthError(errorMessage ?: "Google sign in failed. Please try again.")
