@@ -12,6 +12,8 @@ import com.example.cst438_p2_android_app.ui.home.RecipeScreen
 import com.example.cst438_p2_android_app.ui.theme.CST438_P2_Android_APPTheme
 import android.content.Intent
 import android.util.Log
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.activity.compose.BackHandler
 
 private enum class AppScreen {
     LOGIN,
@@ -33,6 +35,12 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             CST438_P2_Android_APPTheme {
+                var currentScreen by rememberSaveable {
+                    mutableStateOf(AppScreen.HOME)
+                }
+                BackHandler(enabled = currentScreen == AppScreen.RECIPE) {
+                    currentScreen = AppScreen.HOME
+                }
 
                 when (currentScreen) {
                     AppScreen.LOGIN -> {
