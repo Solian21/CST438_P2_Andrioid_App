@@ -4,29 +4,34 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.cst438_p2_android_app.ui.theme.CST438_P2_Android_APPTheme
+import com.example.cst438_p2_android_app.auth.GoogleAuthManager
 import com.example.cst438_p2_android_app.ui.home.HomeScreen
 import com.example.cst438_p2_android_app.ui.home.Login
 import com.example.cst438_p2_android_app.ui.home.RecipeScreen
+import com.example.cst438_p2_android_app.ui.theme.CST438_P2_Android_APPTheme
+import android.content.Intent
+import android.util.Log
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.activity.compose.BackHandler
 
 private enum class AppScreen {
+    LOGIN,
     HOME,
     RECIPE
 }
 class MainActivity : ComponentActivity() {
+    //this variable is what is going to hold my helper method that I created ealier
+    private lateinit var googleAuthManager: GoogleAuthManager
+    private var authError by mutableStateOf<String?>(null)
+    private var currentScreen by mutableStateOf(AppScreen.LOGIN)
+    private var googleIdToken by mutableStateOf<String?>(null)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        googleAuthManager = GoogleAuthManager(this)
 
         setContent {
             CST438_P2_Android_APPTheme {
@@ -38,6 +43,24 @@ class MainActivity : ComponentActivity() {
                 }
 
                 when (currentScreen) {
+                    AppScreen.LOGIN -> {
+                        Login(
+                            onGoogleSignInClick = {
+                                authError = null
+                                googleAuthManager.startSignIn { message ->
+                                    showAuthError(message)
+                                }
+                            },
+                            authError = authError,
+                            onRetry = {
+                                authError = null
+                                googleAuthManager.startSignIn { message ->
+                                    showAuthError(message)
+                                }
+                            }
+                        )
+                    }
+
                     AppScreen.HOME -> {
                         HomeScreen(
                             onAddRecipeClick = {
@@ -60,20 +83,51 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+    /**
+     * This function is going to recieve the redirect Intent after the google sing in
+     */
+    override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?
+    ) {
+        super.onActivityResult(requestCode, resultCode, data)
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    CST438_P2_Android_APPTheme {
-        Greeting("Android")
+        if (requestCode == GoogleAuthManager.AUTHORIZATION_REQUEST_CODE) {
+            if (data == null) {
+                Log.e("GoogleAuth", "Google sign in returned no data ")
+                showAuthError("Google sign in returned no response. Please try again.")
+                return
+            }
+            //asking GoogleAuthManager to process teh response and exachange the authorization code for a token
+            googleAuthManager.authorizationRespone(data) {
+                idTokenResult, errorMessage ->
+                if (idTokenResult != null) {
+                    //our authentication worked
+                    runOnUiThread {
+                        googleIdToken = idTokenResult
+                        currentScreen = AppScreen.HOME
+                    }
+                    Log.d("GoogleAuth", "Google sign in worked")
+
+                } else {
+                    Log.e("GoogleAuth", errorMessage ?: "Unknown Google sign in error")
+                    showAuthError(errorMessage ?: "Google sign in failed. Please try again.")
+                }
+            }
+        }
     }
+
+    private fun showAuthError(message: String) {
+        runOnUiThread {
+            authError = message
+        }
+    }
+
+    override fun onDestroy() {
+        googleAuthManager.dispose()
+        super.onDestroy()
+    }
+
 }

@@ -17,6 +17,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+//      OAAuth 2 redirect Scheme
+        manifestPlaceholders["appAuthRedirectScheme"] = "com.googleusercontent.apps.410277647005-3k95dsmiq5b0v6rck11nlvo0ndm1pghf"
     }
 
     buildTypes {
@@ -52,4 +55,6 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
+//  Adding in the Oauth2 Dependecie
+    implementation("net.openid:appauth:0.11.1")
 }

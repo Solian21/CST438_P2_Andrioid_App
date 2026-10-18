@@ -11,7 +11,12 @@ import com.example.cst438_p2_android_app.ui.theme.CST438_P2_Android_APPTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Login(modifier: Modifier = Modifier) {
+fun Login(
+    modifier: Modifier = Modifier,
+    onGoogleSignInClick: () -> Unit = {},
+    authError: String? = null,
+    onRetry: () -> Unit = onGoogleSignInClick
+) {
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -39,6 +44,20 @@ fun Login(modifier: Modifier = Modifier) {
         ) {
             Text("Welcome back!")
 
+            if (authError != null) {
+                Text(
+                    text = authError,
+                    color = MaterialTheme.colorScheme.error
+                )
+
+                OutlinedButton(
+                    onClick = onRetry,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Retry")
+                }
+            }
+
             OutlinedTextField(
                 value = "",
                 onValueChange = {},
@@ -58,7 +77,7 @@ fun Login(modifier: Modifier = Modifier) {
             )
 
             Button(
-                onClick = {},
+                onClick = onGoogleSignInClick,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Log In With Google")
