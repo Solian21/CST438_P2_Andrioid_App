@@ -35,9 +35,6 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             CST438_P2_Android_APPTheme {
-                var currentScreen by rememberSaveable {
-                    mutableStateOf(AppScreen.HOME)
-                }
                 BackHandler(enabled = currentScreen == AppScreen.RECIPE) {
                     currentScreen = AppScreen.HOME
                 }
