@@ -14,6 +14,9 @@ import android.content.Intent
 import android.util.Log
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.activity.compose.BackHandler
+import androidx.lifecycle.lifecycleScope
+import com.example.cst438_p2_android_app.network.ApiClient
+import kotlinx.coroutines.launch
 
 private enum class AppScreen {
     LOGIN,
@@ -82,7 +85,25 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+    /**
+     * This makes the app wait for the GET /api/v1/user/me before opening the home screen
+     */
+    private fun loadCurrentUser(idToken: String) {
+        lifecycleScope.launch {
+            try {
+                val user = ApiClient.apiService.getCurrentUser(
+                    "Bearer $idToken"
+                )
 
+                userDisplayName = user.displayName ?: user.email
+                currentScreen = AppScreen.HOME
+
+            } catch (e: Exception) {
+                Log.e("Api", "Could not load current user", e)
+                showAuthError("Could not connect to your account. Please try again.")
+            }
+        }
+    }
     /**
      * This function is going to recieve the redirect Intent after the google sing in
      */
@@ -104,10 +125,8 @@ class MainActivity : ComponentActivity() {
                 idTokenResult, errorMessage ->
                 if (idTokenResult != null) {
                     //our authentication worked
-                    runOnUiThread {
-                        googleIdToken = idTokenResult
-                        currentScreen = AppScreen.HOME
-                    }
+                    googleIdToken = idTokenResult
+                    loadCurrentUser(idTokenResult)
                     Log.d("GoogleAuth", "Google sign in worked")
 
                 } else {
