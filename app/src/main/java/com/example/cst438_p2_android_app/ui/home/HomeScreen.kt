@@ -22,6 +22,7 @@ import com.example.cst438_p2_android_app.ui.theme.AppDimensions
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
+    userName: String,
     modifier: Modifier = Modifier,
     onAddRecipeClick: () -> Unit = {},
     onUpdateMealPlanClick: () -> Unit = {}
@@ -62,7 +63,7 @@ fun HomeScreen(
             )
         ) {
             Text(
-                text = "Welcome! {Name}",
+                text = "Welcome $userName!",
             )
 
             OutlinedTextField(
@@ -121,6 +122,6 @@ fun HomeScreen(
 @Composable
 fun HomeScreenPreview() {
     CST438_P2_Android_APPTheme {
-        HomeScreen()
+        HomeScreen(userName = "Preview User")
     }
 }

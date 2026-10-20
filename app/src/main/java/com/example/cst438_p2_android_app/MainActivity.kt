@@ -26,6 +26,7 @@ class MainActivity : ComponentActivity() {
     private var authError by mutableStateOf<String?>(null)
     private var currentScreen by mutableStateOf(AppScreen.LOGIN)
     private var googleIdToken by mutableStateOf<String?>(null)
+    private var userDisplayName by mutableStateOf("")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +61,7 @@ class MainActivity : ComponentActivity() {
 
                     AppScreen.HOME -> {
                         HomeScreen(
+                            userName = userDisplayName,
                             onAddRecipeClick = {
                                 currentScreen = AppScreen.RECIPE
                             },
