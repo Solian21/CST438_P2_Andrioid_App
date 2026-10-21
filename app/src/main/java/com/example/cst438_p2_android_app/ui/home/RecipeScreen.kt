@@ -4,18 +4,22 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.cst438_p2_android_app.network.RecipeResponse
 import com.example.cst438_p2_android_app.ui.theme.CST438_P2_Android_APPTheme
 import com.example.cst438_p2_android_app.ui.theme.AppDimensions
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecipeScreen(
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit = {}
+    recipes: List<RecipeResponse> = emptyList(),
+    onBackClick: () -> Unit = {},
+    onRefreshClick: () -> Unit = {},
+    onRecipeClick: (Long) -> Unit = {}
 ) {
     Scaffold(
         modifier = modifier,
@@ -27,136 +31,69 @@ fun RecipeScreen(
                     }
                 },
                 title = {
-                    Text("Recipes")
+                    Text("Premade Recipes")
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.primary
                 )
             )
-        },
-        floatingActionButton = {
-            DialMenuNav(
-                onAddRecipeClick = {
-                    // Add recipe later
-                },
-                onUpdateMealPlanClick = {
-                    // Add meal plan later
-                }
-            )
         }
     ) { innerPadding ->
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
                 .padding(AppDimensions.screenPadding),
-            verticalArrangement = Arrangement.spacedBy(AppDimensions.sectionSpacing)
+            verticalArrangement = Arrangement.spacedBy(
+                AppDimensions.sectionSpacing
+            )
         ) {
-            Card(
+            Button(
+                onClick = onRefreshClick,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Column(
-                    modifier = Modifier.padding(AppDimensions.cardPadding),
-                    verticalArrangement = Arrangement.spacedBy(AppDimensions.itemSpacing)
-                )  {
-                    Text(
-                        text = "Recipe Name",
-                        style = MaterialTheme.typography.headlineSmall
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Text(
-                        text = "Owned by: {{USERNAME}}",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-
-                    Text(
-                        text = "Dinner recipe",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
+                Text("Refresh Premade Recipes")
             }
 
-            Text(
-                text = "Ingredients",
-                style = MaterialTheme.typography.titleLarge
-            )
-
-            Card(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+            if (recipes.isEmpty()) {
+                Text("No recipes found.")
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(
+                        AppDimensions.itemSpacing
+                    )
                 ) {
-                    //Add in the ingredients
-                }
-            }
+                    items(
+                        items = recipes,
+                        key = { recipe -> recipe.id }
+                    ) { recipe ->
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    onRecipeClick(recipe.id)
+                                }
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(
+                                    AppDimensions.cardPadding
+                                )
+                            ) {
+                                Text(
+                                    text = recipe.name,
+                                    style = MaterialTheme.typography.titleMedium
+                                )
 
-            Text(
-                text = "Instructions",
-                style = MaterialTheme.typography.titleLarge
-            )
+                                Text(
+                                    text = "${recipe.ingredients.size} ingredients"
+                                )
 
-            Card(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    // Add in the Instructions
-                }
-            }
-
-            Text(
-                text = "Meal Plan",
-                style = MaterialTheme.typography.titleLarge
-            )
-
-            Card(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    Text("Planned for: Day")
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Button(
-                        onClick = {
-                            // Connect to meal plan later
+                                Text("Tap to view details")
+                            }
                         }
-                    ) {
-                        Text("Add to Meal Plan")
                     }
-                }
-            }
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                OutlinedButton(
-                    onClick = {
-                        // Edit recipe later
-                    },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text("Edit Recipe")
-                }
-
-                Button(
-                    onClick = {
-                        // Delete recipe later
-                    },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text("Delete Recipe")
                 }
             }
         }
