@@ -12,6 +12,8 @@ import com.example.cst438_p2_android_app.ui.theme.AppDimensions
 fun DialMenuNav(
     modifier: Modifier = Modifier,
     onAddRecipeClick: () -> Unit = {},
+    onAddIngredientClick: () -> Unit = {},
+    onViewRecipesClick: () -> Unit = {},
     onUpdateMealPlanClick: () -> Unit = {}
 ) {
     var isExpanded by remember {
@@ -26,6 +28,24 @@ fun DialMenuNav(
         )
     ) {
         if (isExpanded) {
+            SmallFloatingActionButton(
+                onClick = {
+                    isExpanded = false
+                    onViewRecipesClick()
+                }
+            ) {
+                Text("View Recipes")
+            }
+
+            SmallFloatingActionButton(
+                onClick = {
+                    isExpanded = false
+                    onAddIngredientClick()
+                }
+            ) {
+                Text("Add Ingredient")
+            }
+
             SmallFloatingActionButton(
                 onClick = {
                     isExpanded = false
